@@ -85,6 +85,19 @@ az group create --name "$RG_NAME" --location "$LOCATION"
 echo "Creating Key Vault..."
 az keyvault create --name "$KV_NAME" --resource-group "$RG_NAME" --location "$LOCATION" --enable-rbac-authorization false
 
+# Wait for KV to be ready
+echo "Waiting for Key Vault to be ready..."
+count=0
+while [[ $count -lt 20 ]]; do
+    if az keyvault show --name "$KV_NAME" --resource-group "$RG_NAME" &> /dev/null; then
+        echo "Key Vault is ready."
+        break
+    fi
+    echo "Waiting for Key Vault provisioning..."
+    sleep 5
+    ((count++))
+done
+
 # 3b. Grant Permissions to Service Principal (if provided)
 if [[ -n "$SP_OBJECT_ID" ]]; then
     echo "Granting 'get' and 'list' secret permissions to Service Principal ($SP_OBJECT_ID)..."
