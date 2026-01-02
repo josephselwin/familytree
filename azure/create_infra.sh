@@ -1,16 +1,17 @@
 #!/bin/bash
 set -e
 
-# Usage: ./create_infra.sh <env>
+# Usage: ./create_infra.sh <env> [optional: service-principal-object-id]
 # <env> can be: dev, qa, prod
 
 ENV=$1
+SP_OBJECT_ID=$2
 LOCATION="eastus"
 ADMIN_USER="sqladmin"
 DB_NAME="sqldb-familytree"
 
 if [[ -z "$ENV" ]]; then
-    echo "Usage: ./create_infra.sh <env>"
+    echo "Usage: ./create_infra.sh <env> [optional: service-principal-object-id]"
     exit 1
 fi
 
@@ -64,6 +65,12 @@ az group create --name "$RG_NAME" --location "$LOCATION"
 echo "Creating Key Vault..."
 az keyvault create --name "$KV_NAME" --resource-group "$RG_NAME" --location "$LOCATION"
 
+# 3b. Grant Permissions to Service Principal (if provided)
+if [[ -n "$SP_OBJECT_ID" ]]; then
+    echo "Granting 'get' and 'list' secret permissions to Service Principal ($SP_OBJECT_ID)..."
+    az keyvault set-policy --name "$KV_NAME" --object-id "$SP_OBJECT_ID" --secret-permissions get list
+fi
+
 # 4. Generate and Store Password
 echo "Generating Admin Password..."
 # Generate a strong password (16 chars, alphanumeric + special)
@@ -104,3 +111,6 @@ echo "Key Vault: $KV_NAME"
 echo "SQL Server FQDN: $SERVER_NAME.database.windows.net"
 echo "Admin User: $ADMIN_USER"
 echo "Password stored in Key Vault secret: 'sql-admin-password'"
+if [[ -n "$SP_OBJECT_ID" ]]; then
+    echo "Access granted to Service Principal: $SP_OBJECT_ID"
+fi
