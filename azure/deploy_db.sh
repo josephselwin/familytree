@@ -68,7 +68,7 @@ if [[ ! -d "$DB_DIR" ]]; then
     DB_DIR="database" 
 fi
 
-FILES=("01_schema.sql" "02_procedures.sql")
+FILES=("01_schema.sql" "02_procedures.sql" "05_indexes.sql")
 
 if [[ "$ENV" != "prod" ]]; then
     FILES+=("03_test_data.sql" "04_test_procedures.sql")
