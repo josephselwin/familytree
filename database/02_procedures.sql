@@ -69,6 +69,15 @@ CREATE PROCEDURE usp_AddMarriage
 AS
 BEGIN
     SET NOCOUNT ON;
+
+    -- Swap IDs to ensure Canonical Order (Person1Id < Person2Id)
+    IF @Person1Id > @Person2Id
+    BEGIN
+        DECLARE @TempId INT = @Person1Id;
+        SET @Person1Id = @Person2Id;
+        SET @Person2Id = @TempId;
+    END
+
     INSERT INTO Marriages (Person1Id, Person2Id, DateOfMarriage, DateOfDivorce, Notes)
     VALUES (@Person1Id, @Person2Id, @DateOfMarriage, @DateOfDivorce, @Notes);
     
@@ -86,6 +95,15 @@ CREATE PROCEDURE usp_UpdateMarriage
 AS
 BEGIN
     SET NOCOUNT ON;
+
+    -- Swap IDs to ensure Canonical Order (Person1Id < Person2Id)
+    IF @Person1Id > @Person2Id
+    BEGIN
+        DECLARE @TempId2 INT = @Person1Id;
+        SET @Person1Id = @Person2Id;
+        SET @Person2Id = @TempId2;
+    END
+
     UPDATE Marriages
     SET Person1Id = @Person1Id,
         Person2Id = @Person2Id,

@@ -2,10 +2,11 @@
 CREATE TABLE People (
     PersonId INT IDENTITY(1,1) PRIMARY KEY,
     FullName NVARCHAR(200) NOT NULL,
-    Gender CHAR(1), -- 'M', 'F', 'O'
-    BirthDate DATE,
+    Gender CHAR(1) NOT NULL CHECK (Gender IN ('M', 'F')), -- 'M', 'F'
+    BirthDate DATE NOT NULL,
     DeathDate DATE,
-    Notes NVARCHAR(MAX)
+    Notes NVARCHAR(MAX),
+    CONSTRAINT CK_People_DeathDate CHECK (DeathDate >= BirthDate)
 );
 
 -- Create Relationships Table (Parentage)
@@ -16,7 +17,9 @@ CREATE TABLE Relationships (
     PRIMARY KEY (PersonId),
     FOREIGN KEY (PersonId) REFERENCES People(PersonId),
     FOREIGN KEY (FatherId) REFERENCES People(PersonId),
-    FOREIGN KEY (MotherId) REFERENCES People(PersonId)
+    FOREIGN KEY (MotherId) REFERENCES People(PersonId),
+    CONSTRAINT CK_Relationships_NoSelfParent CHECK (PersonId <> FatherId AND PersonId <> MotherId),
+    CONSTRAINT CK_Relationships_DifferentParents CHECK (FatherId <> MotherId)
 );
 
 -- Create Marriages Table
@@ -28,7 +31,9 @@ CREATE TABLE Marriages (
     DateOfDivorce DATE,
     Notes NVARCHAR(MAX),
     FOREIGN KEY (Person1Id) REFERENCES People(PersonId),
-    FOREIGN KEY (Person2Id) REFERENCES People(PersonId)
+    FOREIGN KEY (Person2Id) REFERENCES People(PersonId),
+    CONSTRAINT CK_Marriages_CanonicalOrder CHECK (Person1Id < Person2Id),
+    CONSTRAINT CK_Marriages_DivorceDate CHECK (DateOfDivorce >= DateOfMarriage)
 );
 
 -- Create Events Table
