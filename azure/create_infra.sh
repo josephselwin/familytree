@@ -57,13 +57,33 @@ else
     echo "Warning: Subscription '$SUB_NAME' not found. creating resources in current subscription."
 fi
 
+# 1b. Register Resource Providers
+echo "Ensuring Resource Providers are registered..."
+for provider in Microsoft.KeyVault Microsoft.Sql; do
+    state=$(az provider show -n $provider --query "registrationState" -o tsv)
+    if [[ "$state" != "Registered" ]]; then
+        echo "Registering provider: $provider"
+        az provider register --namespace $provider
+        echo "Waiting for registration (this may take a moment)..."
+        # Simple wait loop
+        count=0
+        while [[ "$state" != "Registered" && $count -lt 10 ]]; do
+            sleep 5
+            state=$(az provider show -n $provider --query "registrationState" -o tsv)
+            ((count++))
+        done
+    else
+        echo "Provider $provider is already registered."
+    fi
+done
+
 # 2. Create Resource Group
 echo "Creating Resource Group..."
 az group create --name "$RG_NAME" --location "$LOCATION"
 
 # 3. Create Key Vault
 echo "Creating Key Vault..."
-az keyvault create --name "$KV_NAME" --resource-group "$RG_NAME" --location "$LOCATION"
+az keyvault create --name "$KV_NAME" --resource-group "$RG_NAME" --location "$LOCATION" --enable-rbac-authorization false
 
 # 3b. Grant Permissions to Service Principal (if provided)
 if [[ -n "$SP_OBJECT_ID" ]]; then
