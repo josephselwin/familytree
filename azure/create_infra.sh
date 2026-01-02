@@ -6,7 +6,7 @@ set -e
 
 ENV=$1
 SP_OBJECT_ID=$2
-LOCATION="eastus2"
+LOCATION="centralus"
 ADMIN_USER="sqladmin"
 DB_NAME="sqldb-familytree"
 
