@@ -101,7 +101,7 @@ done
 # 3b. Grant Permissions to Service Principal (if provided)
 if [[ -n "$SP_OBJECT_ID" ]]; then
     echo "Granting 'get' and 'list' secret permissions to Service Principal ($SP_OBJECT_ID)..."
-    az keyvault set-policy --name "$KV_NAME" --object-id "$SP_OBJECT_ID" --secret-permissions get list
+    az keyvault set-policy --name "$KV_NAME" --resource-group "$RG_NAME" --object-id "$SP_OBJECT_ID" --secret-permissions get list
 fi
 
 # 4. Generate and Store Password
