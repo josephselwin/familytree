@@ -1,6 +1,6 @@
 -- PEOPLE Procedures
 
-CREATE PROCEDURE usp_AddPerson
+CREATE OR ALTER PROCEDURE usp_AddPerson
     @FullName NVARCHAR(200),
     @Gender CHAR(1),
     @BirthDate DATE,
@@ -17,7 +17,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE usp_UpdatePerson
+CREATE OR ALTER PROCEDURE usp_UpdatePerson
     @PersonId INT,
     @FullName NVARCHAR(200),
     @Gender CHAR(1),
@@ -39,7 +39,7 @@ GO
 
 -- RELATIONSHIPS Procedures (Parentage)
 
-CREATE PROCEDURE usp_SetParents
+CREATE OR ALTER PROCEDURE usp_SetParents
     @PersonId INT,
     @FatherId INT,
     @MotherId INT
@@ -59,7 +59,7 @@ GO
 
 -- MARRIAGES Procedures
 
-CREATE PROCEDURE usp_AddMarriage
+CREATE OR ALTER PROCEDURE usp_AddMarriage
     @Person1Id INT,
     @Person2Id INT,
     @DateOfMarriage DATE,
@@ -85,7 +85,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE usp_UpdateMarriage
+CREATE OR ALTER PROCEDURE usp_UpdateMarriage
     @MarriageId INT,
     @Person1Id INT,
     @Person2Id INT,
@@ -116,7 +116,7 @@ GO
 
 -- EVENTS Procedures
 
-CREATE PROCEDURE usp_AddEvent
+CREATE OR ALTER PROCEDURE usp_AddEvent
     @PersonId INT,
     @EventType NVARCHAR(100),
     @EventDate DATE,
@@ -133,7 +133,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE usp_UpdateEvent
+CREATE OR ALTER PROCEDURE usp_UpdateEvent
     @EventId INT,
     @PersonId INT,
     @EventType NVARCHAR(100),
