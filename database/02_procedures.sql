@@ -152,3 +152,16 @@ BEGIN
     WHERE EventId = @EventId;
 END;
 GO
+
+-- SEARCH Procedures
+
+CREATE OR ALTER PROCEDURE usp_SearchPeople
+    @PartialName NVARCHAR(200)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT * 
+    FROM People 
+    WHERE FullName LIKE '%' + @PartialName + '%';
+END;
+GO

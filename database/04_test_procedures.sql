@@ -21,6 +21,10 @@ EXEC usp_UpdatePerson
     @BirthDate = '2000-01-01', 
     @Notes = 'Updated via SP';
 
+-- 3. Test Search
+PRINT 'Testing Search...';
+EXEC usp_SearchPeople @PartialName = 'Test';
+
 -- 3. Test usp_SetParents (Upsert)
 -- Assuming valid FatherId and MotherId exist (e.g., from previous test_data.sql run, specifically IDs 3 and 4)
 -- If running on clean DB, ensuring IDs exist is needed. For this text, we'll try to use @NewPersonId as child and assuming 1 and 2 exist.
